@@ -1,0 +1,26 @@
+version: "3.4"
+
+services:
+  api:
+    container_name: api
+    build:
+      context: ./api
+    command: "sh -c 'yarn install && yarn run dev'"
+    environment:
+      NODE_ENV: development
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+    volumes:
+      - ./api:/app:rw
+      - api-node-modules:/app/node_modules:rw
+    ports:
+      - "3030:3030"
+    networks:
+      - subnet_0
+    restart: on-failure
+
+networks:
+  subnet_0:
+    driver: bridge
+
+volumes:
+  api-node-modules: {}
