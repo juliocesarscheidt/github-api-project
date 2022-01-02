@@ -16,6 +16,11 @@ docker-compose logs -f --tail 50 api
 
 ```bash
 curl --silent -X GET \
+  --url 'http://localhost:3030/api/v1/repositories/<GITHUB_REPO_OWNER_NAME>' \
+  | jq -r '.'
+
+# Example
+curl --silent -X GET \
   --url 'http://localhost:3030/api/v1/repositories/juliocesarscheidt' \
   | jq -r '.'
 ```
