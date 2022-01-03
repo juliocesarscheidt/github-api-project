@@ -1,5 +1,5 @@
-const { gql } = require("graphql-request");
-const { getGraphqlClient } = require('../common/graphql');
+const { gql } = require('graphql-request');
+const { getGraphqlClient } = require('../common/graphqlClient');
 
 class RepositoriesService {
 
@@ -35,18 +35,15 @@ class RepositoriesService {
       }
     }`;
     const data = await this.graphqlClient.request(query, variables);
-    const { repositories } = data.repositoryOwner;
-    const { nodes } = repositories;
+    const { nodes } = data.repositoryOwner.repositories;
     let response = [];
     nodes.map((node) => {
-      const { name, description } = node;
-      const topics = node.repositoryTopics.nodes.map(it => it.topic.name.toString().trim().toLowerCase());
-      const languages = node.languages.nodes.map(it => it.name.toString().trim().toLowerCase());
+      const { name, description, repositoryTopics, languages } = node;
       response.push({
         name,
         description,
-        topics,
-        languages,
+        topics: repositoryTopics.nodes.map(it => it.topic.name.toString().trim().toLowerCase()),
+        languages: languages.nodes.map(it => it.name.toString().trim().toLowerCase()),
       });
     });
     return response;
@@ -74,13 +71,11 @@ class RepositoriesService {
       }
     }`;
     const data = await this.graphqlClient.request(query, variables);
-    const { repositories } = data.repositoryOwner;
-    const { nodes } = repositories;
+    const { nodes } = data.repositoryOwner.repositories;
     let response = [];
     nodes.map((node) => {
-      response.push(
-        node.repositoryTopics.nodes.map(it => it.topic.name.toString().trim().toLowerCase())
-      );
+      response.push(node.repositoryTopics.nodes
+        .map(it => it.topic.name.toString().trim().toLowerCase()));
     });
     return [...new Set(response.flat())];
   }
@@ -106,15 +101,12 @@ class RepositoriesService {
         }
       }
     }`;
-
     const data = await this.graphqlClient.request(query, variables);
-    const { repositories } = data.repositoryOwner;
-    const { nodes } = repositories;
+    const { nodes } = data.repositoryOwner.repositories;
     let response = [];
     nodes.map((node) => {
-      response.push(
-        node.languages.nodes.map(it => it.name.toString().trim().toLowerCase())
-      );
+      response.push(node.languages.nodes
+        .map(it => it.name.toString().trim().toLowerCase()));
     });
     return [...new Set(response.flat())];
   }

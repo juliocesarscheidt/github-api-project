@@ -1,4 +1,4 @@
-# Github API with GraphQL
+# Wrapper REST API for Github GraphQL API
 
 ## Up and Running
 
