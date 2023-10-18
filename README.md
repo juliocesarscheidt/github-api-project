@@ -15,12 +15,15 @@ docker-compose logs -f --tail 50 api
 > List repositories
 
 ```bash
+# repositories by owner
 curl --silent -X GET \
-  --url 'http://localhost:3030/api/v1/repositories/<GITHUB_REPO_OWNER_NAME>' \
-  | jq -r '.'
+  --url 'http://localhost:3030/api/v1/repositories/<GITHUB_REPO_OWNER_NAME>'
 
-# Example
+# topics/tags by owner
 curl --silent -X GET \
-  --url 'http://localhost:3030/api/v1/repositories/juliocesarscheidt' \
-  | jq -r '.'
+  --url 'http://localhost:3030/api/v1/repositories/<GITHUB_REPO_OWNER_NAME>/topics'
+
+# languages by owner
+curl --silent -X GET \
+  --url 'http://localhost:3030/api/v1/repositories/<GITHUB_REPO_OWNER_NAME>/languages'
 ```

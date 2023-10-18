@@ -7,6 +7,14 @@ class RepositoriesService {
     console.log('[INFO] RepositoriesService init');
     this.graphqlClient = getGraphqlClient();
   }
+  
+  trimLowercase(value) {
+    return value.toString().trim().toLowerCase();
+  }
+  
+  makeUniqueSetFrom(arr) {
+    return [...new Set(arr)];
+  }
 
   async getRepositories(repoOwnerName, maxRepos = 50) {
     const variables = {};
@@ -42,8 +50,8 @@ class RepositoriesService {
       response.push({
         name,
         description,
-        topics: repositoryTopics.nodes.map(it => it.topic.name.toString().trim().toLowerCase()),
-        languages: languages.nodes.map(it => it.name.toString().trim().toLowerCase()),
+        topics: repositoryTopics.nodes.map(it => this.trimLowercase(it.topic.name)),
+        languages: languages.nodes.map(it => this.trimLowercase(it.name)),
       });
     });
     return response;
@@ -75,9 +83,9 @@ class RepositoriesService {
     let response = [];
     nodes.map((node) => {
       response.push(node.repositoryTopics.nodes
-        .map(it => it.topic.name.toString().trim().toLowerCase()));
+        .map(it => this.trimLowercase(it.topic.name)));
     });
-    return [...new Set(response.flat())];
+    return this.makeUniqueSetFrom(response.flat());
   }
 
   async getRepositoriesLanguages(repoOwnerName, maxRepos = 50) {
@@ -106,9 +114,9 @@ class RepositoriesService {
     let response = [];
     nodes.map((node) => {
       response.push(node.languages.nodes
-        .map(it => it.name.toString().trim().toLowerCase()));
+        .map(it => this.trimLowercase(it.name)));
     });
-    return [...new Set(response.flat())];
+    return this.makeUniqueSetFrom(response.flat());
   }
 }
 
